@@ -3,21 +3,36 @@ dotenv.config();
 import express from "express"
 import { ChatGPTAPI } from 'chatgpt'
 
-async function example() {
-  const api = new ChatGPTAPI({
-    apiKey: process.env.OPENAI_API_KEY
-  })
-  const res = await api.sendMessage('Hello World!')
-  console.log(res.text)
-}
+const api = new ChatGPTAPI({
+    apiKey: process.env.OPENAI_API_KEY,
+    systemMessage: `You are ChatGPT, a large language model trained by OpenAI. You answer as concisely as possible for each response.\nCurrent date: ${new Date().toISOString()}\n\n`
+})
+const chatpool = {};
 
 const app = express();
-const port = 6006
+app.use(express.json());
+const port = 6006;
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+    res.send('Hello World from chat-node-agent!')
 })
-
+app.post("/chat-node-agent/api/chat", async (req, res) => {
+    //console.log(req.body);      // your JSON
+    const chatid = req.body.chatid;
+    const chatcontent = req.body.content;
+    if (!chatcontent) { res.send({ status: "error", msg: "empty chat content!" }) }
+    let chatres = {}
+    if (chatpool.hasOwnProperty(chatid)) {
+        chatres = await api.sendMessage(chatconent, {
+            parentMessageId: chatpool[chatid]
+        })
+    }
+    else {
+        chatres = await api.sendMessage(chatcontent);
+        chatpool[chatid] = chatres.id;
+    }
+    res.send({ status: "ok", sg: chatres.text })
+})
 app.listen(port, () => {
-  console.log(`Example app listening on port: ${port}`)
+    console.log(`Example app listening on port: ${port}`)
 })
