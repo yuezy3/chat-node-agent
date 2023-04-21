@@ -23,7 +23,7 @@ app.post("/chat-node-agent/api/chat", async (req, res) => {
     if (!chatcontent) { res.send({ status: "error", msg: "empty chat content!" }) }
     let chatres = {}
     if (chatpool.hasOwnProperty(chatid)) {
-        chatres = await api.sendMessage(chatconent, {
+        chatres = await api.sendMessage(chatcontent, {
             parentMessageId: chatpool[chatid]
         })
     }
