@@ -31,7 +31,7 @@ app.post("/chat-node-agent/api/chat", async (req, res) => {
         chatres = await api.sendMessage(chatcontent);
         chatpool[chatid] = chatres.id;
     }
-    res.send({ status: "ok", sg: chatres.text })
+    res.send({ status: "ok", msg: chatres.text })
 })
 app.listen(port, () => {
     console.log(`Example app listening on port: ${port}`)
