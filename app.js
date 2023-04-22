@@ -29,7 +29,7 @@ app.post("/chat-node-agent/api/chat", async (req, res) => {
     }
     else {
         chatres = await api.sendMessage(chatcontent);
-        chatres.text = "新话题\n-----" + chatres.text;
+        chatres.text = "新话题\n-----\n\n" + chatres.text;
         chatpool[chatid] = { "id": chatres.id };
     }
     chatpool[chatid]["timestamp"] = (new Date()).getTime();
