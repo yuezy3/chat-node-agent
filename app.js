@@ -22,15 +22,17 @@ app.post("/chat-node-agent/api/chat", async (req, res) => {
     const chatcontent = req.body.content;
     if (!chatcontent) { res.send({ status: "error", msg: "empty chat content!" }) }
     let chatres = {}
-    if (chatpool.hasOwnProperty(chatid)) {
+    if (chatpool.hasOwnProperty(chatid) && chatpool[chatid]["timestamp"] > ((new Date()).getTime() - 15 * 60 * 1000)) { //has chatid and not in 15min ago
         chatres = await api.sendMessage(chatcontent, {
-            parentMessageId: chatpool[chatid]
+            parentMessageId: chatpool[chatid]["id"]
         })
     }
     else {
         chatres = await api.sendMessage(chatcontent);
-        chatpool[chatid] = chatres.id;
+        chatres.text = "新话题\n-----" + chatres.text;
+        chatpool[chatid] = { "id": chatres.id };
     }
+    chatpool[chatid]["timestamp"] = (new Date()).getTime();
     res.send({ status: "ok", msg: chatres.text })
 })
 app.listen(port, () => {
