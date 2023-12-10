@@ -5,6 +5,10 @@ import { ChatGPTAPI } from 'chatgpt'
 
 const api = new ChatGPTAPI({
     apiKey: process.env.OPENAI_API_KEY,
+    completionParams: {
+        model: "gpt-4",
+        temperature: 0.5,
+    },
     systemMessage: `You are ChatGPT, a large language model trained by OpenAI. Try to answer in Chinese every time.\nCurrent date: ${new Date().toISOString()}\n\n`
 })
 const chatpool = {};
